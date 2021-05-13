@@ -1,0 +1,2 @@
+p, *, /data/:file_id, read
+p, admin, /data/:file_id, write
