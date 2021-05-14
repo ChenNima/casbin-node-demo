@@ -12,7 +12,6 @@ import { newEnforcer } from "casbin"
   const e = await newEnforcer(path.join(__dirname, '..', 'rbac_model.conf'), a);
   e.enableAutoSave(true)
   await e.addRoleForUser("felix", "user")
-  await e.addPolicy('*', '/data/:file_id', 'read')
   console.log(`Role of felix is ${await e.getRolesForUser('felix')}`)
   console.log(`felix can read /data/file1 ? ${await e.enforce('felix', '/data/file1', 'read')}`)
   console.log(`felix can write /data/file1 ? ${await e.enforce('felix', '/data/file1', 'write')}`)
