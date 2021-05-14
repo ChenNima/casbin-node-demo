@@ -4,11 +4,15 @@
 // const require = createRequire(import.meta.url);
 // const casbin = require("casbin");
 import path from 'path';
+import { PrismaAdapter } from 'casbin-prisma-adapter';
 import { newEnforcer } from "casbin"
 
 (async() => {
-  const e = await newEnforcer(path.join(__dirname, '..', 'rbac_model.conf'), path.join(__dirname, '..', 'rbac_policy.csv'));
+  const a = await PrismaAdapter.newAdapter();
+  const e = await newEnforcer(path.join(__dirname, '..', 'rbac_model.conf'), a);
+  e.enableAutoSave(true)
   await e.addRoleForUser("felix", "user")
+  await e.addPolicy('*', '/data/:file_id', 'read')
   console.log(`Role of felix is ${await e.getRolesForUser('felix')}`)
   console.log(`felix can read /data/file1 ? ${await e.enforce('felix', '/data/file1', 'read')}`)
   console.log(`felix can write /data/file1 ? ${await e.enforce('felix', '/data/file1', 'write')}`)
